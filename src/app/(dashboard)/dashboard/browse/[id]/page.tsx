@@ -17,6 +17,8 @@ export default async function AppDetailPage({
   const session = await auth();
   const { id } = await params;
 
+  const currentUserId = session?.user?.id;
+
   const app = await prisma.app.findUnique({
     where: { id },
     include: {
@@ -24,6 +26,7 @@ export default async function AppDetailPage({
       reviews: {
         include: {
           reviewer: { select: { name: true, email: true } },
+          votes: true,
         },
         orderBy: { createdAt: "desc" },
       },
@@ -38,21 +41,33 @@ export default async function AppDetailPage({
   const questions = JSON.parse(app.questions) as string[];
 
   // Parse reviews
-  const reviews: ReviewWithDetails[] = app.reviews.map((r) => ({
-    id: r.id,
-    isAI: r.isAI,
-    ratings: JSON.parse(r.ratings) as RatingMap,
-    overallScore: r.overallScore,
-    feedback: r.feedback,
-    suggestions: JSON.parse(r.suggestions) as string[],
-    appId: r.appId,
-    reviewerId: r.reviewerId,
-    createdAt: r.createdAt,
-    updatedAt: r.updatedAt,
-    reviewer: r.reviewer
-      ? { name: r.reviewer.name, email: r.reviewer.email }
-      : undefined,
-  }));
+  const reviews: ReviewWithDetails[] = app.reviews.map((r) => {
+    const helpfulVotes = r.votes.filter((v) => v.helpful).length;
+    const unhelpfulVotes = r.votes.filter((v) => !v.helpful).length;
+    const userVote = currentUserId
+      ? r.votes.find((v) => v.voterId === currentUserId)
+      : undefined;
+
+    return {
+      id: r.id,
+      isAI: r.isAI,
+      ratings: JSON.parse(r.ratings) as RatingMap,
+      overallScore: r.overallScore,
+      feedback: r.feedback,
+      suggestions: JSON.parse(r.suggestions) as string[],
+      ownerResponse: r.ownerResponse,
+      ownerRespondedAt: r.ownerRespondedAt,
+      appId: r.appId,
+      reviewerId: r.reviewerId,
+      createdAt: r.createdAt,
+      updatedAt: r.updatedAt,
+      reviewer: r.reviewer
+        ? { name: r.reviewer.name, email: r.reviewer.email }
+        : undefined,
+      voteCounts: { helpful: helpfulVotes, unhelpful: unhelpfulVotes },
+      currentUserVote: userVote ? userVote.helpful : null,
+    };
+  });
 
   // Compute summary
   const totalReviews = reviews.length;
@@ -98,9 +113,9 @@ export default async function AppDetailPage({
 
   // Check if user already reviewed
   const hasReviewed = reviews.some(
-    (r) => r.reviewerId === session?.user?.id
+    (r) => r.reviewerId === currentUserId
   );
-  const isOwner = app.userId === session?.user?.id;
+  const isOwner = app.userId === currentUserId;
 
   return (
     <div className="space-y-8">
@@ -187,7 +202,13 @@ export default async function AppDetailPage({
             Reviews ({reviews.length})
           </h3>
           {reviews.map((review) => (
-            <ReviewCard key={review.id} review={review} />
+            <ReviewCard
+              key={review.id}
+              review={review}
+              currentUserId={currentUserId}
+              isAppOwner={isOwner}
+              appId={id}
+            />
           ))}
         </div>
       )}

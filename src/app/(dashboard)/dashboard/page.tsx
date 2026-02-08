@@ -142,9 +142,21 @@ export default async function DashboardPage() {
           Recent Reviews on Your Apps
         </h3>
         {recentReviews.length === 0 ? (
-          <p className="mt-3 text-sm text-gray-500">
-            No reviews yet. Submit an app to get started!
-          </p>
+          <div className="mt-3 flex flex-col items-center rounded-2xl border border-dashed border-gray-300 bg-white py-10 px-6 text-center">
+            <p className="text-sm font-medium text-gray-900">
+              No reviews on your apps yet
+            </p>
+            <p className="mt-1 text-sm text-gray-500">
+              Submit an app to start collecting AI and community feedback.
+            </p>
+            <Link
+              href="/dashboard/submit"
+              className="mt-4 inline-flex items-center gap-2 rounded-lg bg-lumora-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-lumora-700"
+            >
+              <PlusCircle className="h-4 w-4" />
+              Submit Your First App
+            </Link>
+          </div>
         ) : (
           <div className="mt-3 space-y-3">
             {recentReviews.map((review) => (

@@ -55,6 +55,8 @@ export interface Review {
   overallScore: number;
   feedback: string;
   suggestions: string[];
+  ownerResponse?: string | null;
+  ownerRespondedAt?: Date | null;
   appId: string;
   reviewerId: string;
   createdAt: Date;
@@ -64,6 +66,8 @@ export interface Review {
 export interface ReviewWithDetails extends Review {
   reviewer?: { name: string | null; email: string };
   app?: { name: string; id: string };
+  voteCounts?: { helpful: number; unhelpful: number };
+  currentUserVote?: boolean | null;
 }
 
 export interface ReviewSummary {

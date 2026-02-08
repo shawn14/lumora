@@ -20,7 +20,7 @@ export default function CTA() {
           Ready to get real feedback on your app?
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-lg text-lumora-100">
-          Join hundreds of developers getting better feedback and building better apps with Lumora.
+          Join developers getting better feedback and building better apps with Lumora.
         </p>
         <a
           href="/signup"

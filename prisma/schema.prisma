@@ -7,16 +7,17 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String    @unique
+  email         String       @unique
   password      String?
   image         String?
-  role          String    @default("user")
+  role          String       @default("user")
   apps          App[]
   reviews       Review[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  reviewVotes   ReviewVote[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
 }
 
 model App {
@@ -36,18 +37,33 @@ model App {
 }
 
 model Review {
-  id              String    @id @default(cuid())
-  isAI            Boolean   @default(false)
-  ratings         String    @default("{}")
-  overallScore    Float     @default(0)
-  feedback        String
-  suggestions     String    @default("[]")
-  app             App       @relation(fields: [appId], references: [id], onDelete: Cascade)
-  appId           String
-  reviewer        User      @relation(fields: [reviewerId], references: [id])
-  reviewerId      String
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id               String       @id @default(cuid())
+  isAI             Boolean      @default(false)
+  ratings          String       @default("{}")
+  overallScore     Float        @default(0)
+  feedback         String
+  suggestions      String       @default("[]")
+  ownerResponse    String?
+  ownerRespondedAt DateTime?
+  app              App          @relation(fields: [appId], references: [id], onDelete: Cascade)
+  appId            String
+  reviewer         User         @relation(fields: [reviewerId], references: [id])
+  reviewerId       String
+  votes            ReviewVote[]
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
 
   @@unique([appId, reviewerId])
+}
+
+model ReviewVote {
+  id        String   @id @default(cuid())
+  helpful   Boolean
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  reviewId  String
+  voter     User     @relation(fields: [voterId], references: [id])
+  voterId   String
+  createdAt DateTime @default(now())
+
+  @@unique([reviewId, voterId])
 }

@@ -6,9 +6,10 @@ import type { AppWithCounts } from "@/types";
 interface AppCardProps {
   app: AppWithCounts;
   href?: string;
+  actions?: React.ReactNode;
 }
 
-export function AppCard({ app, href }: AppCardProps) {
+export function AppCard({ app, href, actions }: AppCardProps) {
   const content = (
     <div
       className={cn(
@@ -25,14 +26,17 @@ export function AppCard({ app, href }: AppCardProps) {
             {app.description}
           </p>
         </div>
-        {app.averageScore > 0 && (
-          <div className="flex shrink-0 items-center gap-1 rounded-lg bg-lumora-50 px-2.5 py-1">
-            <Star className="h-4 w-4 fill-lumora-500 text-lumora-500" />
-            <span className="text-sm font-semibold text-lumora-700">
-              {app.averageScore.toFixed(1)}
-            </span>
-          </div>
-        )}
+        <div className="flex shrink-0 items-center gap-2">
+          {actions}
+          {app.averageScore > 0 && (
+            <div className="flex items-center gap-1 rounded-lg bg-lumora-50 px-2.5 py-1">
+              <Star className="h-4 w-4 fill-lumora-500 text-lumora-500" />
+              <span className="text-sm font-semibold text-lumora-700">
+                {app.averageScore.toFixed(1)}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
       <div className="mt-4 flex items-center gap-4 text-xs text-gray-500">
         <span>

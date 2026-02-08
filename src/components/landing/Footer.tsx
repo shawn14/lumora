@@ -1,27 +1,20 @@
 const footerLinks = {
   Product: [
-    { label: "AI Reviews", href: "#" },
-    { label: "Community Reviews", href: "#" },
-    { label: "Structured Ratings", href: "#" },
-    { label: "Reports", href: "#" },
+    { label: "AI Reviews", href: "/signup" },
+    { label: "Community Reviews", href: "/signup" },
     { label: "Browse Apps", href: "/dashboard/browse" },
   ],
   "For Developers": [
     { label: "Submit App", href: "/signup" },
     { label: "Review Apps", href: "/dashboard/browse" },
-    { label: "Leaderboard", href: "#" },
-    { label: "API", href: "#" },
   ],
   Company: [
-    { label: "About", href: "#" },
-    { label: "Blog", href: "#" },
-    { label: "Careers", href: "#" },
-    { label: "Contact", href: "#" },
+    { label: "About", href: "/", disabled: true },
+    { label: "Contact", href: "/", disabled: true },
   ],
   Legal: [
-    { label: "Privacy Policy", href: "#" },
-    { label: "Terms of Service", href: "#" },
-    { label: "Security", href: "#" },
+    { label: "Privacy Policy", href: "/privacy" },
+    { label: "Terms of Service", href: "/terms" },
   ],
 };
 
@@ -52,12 +45,18 @@ export default function Footer() {
               <ul className="mt-4 space-y-3">
                 {links.map((link) => (
                   <li key={link.label}>
-                    <a
-                      href={link.href}
-                      className="text-sm text-gray-500 transition-colors hover:text-gray-700"
-                    >
-                      {link.label}
-                    </a>
+                    {"disabled" in link && link.disabled ? (
+                      <span className="cursor-not-allowed text-sm text-gray-400">
+                        {link.label}
+                      </span>
+                    ) : (
+                      <a
+                        href={link.href}
+                        className="text-sm text-gray-500 transition-colors hover:text-gray-700"
+                      >
+                        {link.label}
+                      </a>
+                    )}
                   </li>
                 ))}
               </ul>

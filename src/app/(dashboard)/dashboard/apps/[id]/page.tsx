@@ -13,6 +13,7 @@ import type {
   ReviewSummary as ReviewSummaryType,
 } from "@/types";
 import { RequestAIReviewButton } from "./request-ai-review-button";
+import { AppActions } from "./app-actions";
 
 export default async function AppDetailPage({
   params,
@@ -21,6 +22,7 @@ export default async function AppDetailPage({
 }) {
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
+  const userId = session.user.id;
 
   const { id } = await params;
 
@@ -30,6 +32,7 @@ export default async function AppDetailPage({
       reviews: {
         include: {
           reviewer: { select: { name: true, email: true } },
+          votes: true,
         },
         orderBy: { createdAt: "desc" },
       },
@@ -37,27 +40,37 @@ export default async function AppDetailPage({
   });
 
   if (!app) notFound();
-  if (app.userId !== session.user.id) redirect("/dashboard/apps");
+  if (app.userId !== userId) redirect("/dashboard/apps");
 
   const questions = JSON.parse(app.questions) as string[];
   const screenshots = JSON.parse(app.screenshots) as string[];
 
   // Parse reviews
-  const reviews: ReviewWithDetails[] = app.reviews.map((r) => ({
-    id: r.id,
-    isAI: r.isAI,
-    ratings: JSON.parse(r.ratings) as RatingMap,
-    overallScore: r.overallScore,
-    feedback: r.feedback,
-    suggestions: JSON.parse(r.suggestions) as string[],
-    appId: r.appId,
-    reviewerId: r.reviewerId,
-    createdAt: r.createdAt,
-    updatedAt: r.updatedAt,
-    reviewer: r.reviewer
-      ? { name: r.reviewer.name, email: r.reviewer.email }
-      : undefined,
-  }));
+  const reviews: ReviewWithDetails[] = app.reviews.map((r) => {
+    const helpfulVotes = r.votes.filter((v) => v.helpful).length;
+    const unhelpfulVotes = r.votes.filter((v) => !v.helpful).length;
+    const userVote = r.votes.find((v) => v.voterId === userId);
+
+    return {
+      id: r.id,
+      isAI: r.isAI,
+      ratings: JSON.parse(r.ratings) as RatingMap,
+      overallScore: r.overallScore,
+      feedback: r.feedback,
+      suggestions: JSON.parse(r.suggestions) as string[],
+      ownerResponse: r.ownerResponse,
+      ownerRespondedAt: r.ownerRespondedAt,
+      appId: r.appId,
+      reviewerId: r.reviewerId,
+      createdAt: r.createdAt,
+      updatedAt: r.updatedAt,
+      reviewer: r.reviewer
+        ? { name: r.reviewer.name, email: r.reviewer.email }
+        : undefined,
+      voteCounts: { helpful: helpfulVotes, unhelpful: unhelpfulVotes },
+      currentUserVote: userVote ? userVote.helpful : null,
+    };
+  });
 
   // Build summary
   const hasAIReview = reviews.some((r) => r.isAI);
@@ -133,6 +146,16 @@ export default async function AppDetailPage({
         </div>
       </div>
 
+      {/* App management actions (edit, delete, status) */}
+      <AppActions
+        appId={app.id}
+        initialName={app.name}
+        initialDescription={app.description}
+        initialUrl={app.url ?? ""}
+        initialTargetAudience={app.targetAudience ?? ""}
+        initialStatus={app.status as "draft" | "published" | "archived"}
+      />
+
       {/* Questions */}
       {questions.length > 0 && (
         <div>
@@ -178,7 +201,13 @@ export default async function AppDetailPage({
         ) : (
           <div className="mt-3 space-y-4">
             {reviews.map((review) => (
-              <ReviewCard key={review.id} review={review} />
+              <ReviewCard
+                key={review.id}
+                review={review}
+                currentUserId={userId}
+                isAppOwner={true}
+                appId={app.id}
+              />
             ))}
           </div>
         )}

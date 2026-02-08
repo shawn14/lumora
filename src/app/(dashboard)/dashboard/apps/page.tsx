@@ -1,9 +1,7 @@
-import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { redirect } from "next/navigation";
-import { PlusCircle } from "lucide-react";
-import { AppCard } from "@/components/AppCard";
+import { AppsClient } from "./apps-client";
 import type { AppWithCounts } from "@/types";
 
 export default async function MyAppsPage() {
@@ -49,44 +47,5 @@ export default async function MyAppsPage() {
     };
   });
 
-  return (
-    <div>
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">My Apps</h2>
-        <Link
-          href="/dashboard/submit"
-          className="inline-flex items-center gap-2 rounded-lg bg-lumora-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-lumora-700"
-        >
-          <PlusCircle className="h-4 w-4" />
-          Submit App
-        </Link>
-      </div>
-
-      {appsWithCounts.length === 0 ? (
-        <div className="flex flex-col items-center justify-center rounded-2xl border border-dashed border-gray-300 bg-white py-16 px-6 text-center">
-          <p className="text-lg font-medium text-gray-900">No apps yet</p>
-          <p className="mt-1 text-sm text-gray-500">
-            Submit your first app to start getting feedback.
-          </p>
-          <Link
-            href="/dashboard/submit"
-            className="mt-4 inline-flex items-center gap-2 rounded-lg bg-lumora-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-lumora-700"
-          >
-            <PlusCircle className="h-4 w-4" />
-            Submit Your First App
-          </Link>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {appsWithCounts.map((app) => (
-            <AppCard
-              key={app.id}
-              app={app}
-              href={`/dashboard/apps/${app.id}`}
-            />
-          ))}
-        </div>
-      )}
-    </div>
-  );
+  return <AppsClient apps={appsWithCounts} />;
 }

@@ -4,9 +4,9 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 
 const stats = [
-  { value: "500+", label: "Apps Reviewed" },
-  { value: "4.8", label: "Avg Rating" },
-  { value: "2min", label: "AI Review Time" },
+  { value: "6", label: "Rating Categories" },
+  { value: "AI + Human", label: "Dual Reviews" },
+  { value: "<2min", label: "AI Review Time" },
 ];
 
 export default function Hero() {
