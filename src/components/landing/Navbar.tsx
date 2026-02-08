@@ -5,10 +5,9 @@ import { Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const navLinks = [
-  { label: "Product", href: "#product" },
-  { label: "Solutions", href: "#solutions" },
-  { label: "Case Studies", href: "#case-studies" },
-  { label: "Pricing", href: "#pricing" },
+  { label: "Features", href: "#product" },
+  { label: "How It Works", href: "#how-it-works" },
+  { label: "Browse Apps", href: "/dashboard/browse" },
 ];
 
 export default function Navbar() {

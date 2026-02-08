@@ -1,35 +1,35 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ClipboardList, Mic, BarChart3 } from "lucide-react";
+import { Upload, Sparkles, Users } from "lucide-react";
 
 const steps = [
   {
     number: "01",
-    icon: ClipboardList,
-    title: "Define Your Research",
+    icon: Upload,
+    title: "Submit Your App",
     description:
-      "Set your research goals and let AI generate a tailored discussion guide.",
+      "Add your app details, screenshots, and specific questions you want answered.",
   },
   {
     number: "02",
-    icon: Mic,
-    title: "Run AI Interviews",
+    icon: Sparkles,
+    title: "Get AI Review",
     description:
-      "Launch interviews with your customers or our global panel. AI moderates 24/7.",
+      "Receive an instant, detailed AI review with scores across 6 categories and actionable suggestions.",
   },
   {
     number: "03",
-    icon: BarChart3,
-    title: "Get Instant Insights",
+    icon: Users,
+    title: "Get Community Feedback",
     description:
-      "Receive synthesized themes, recommendations, and shareable highlight reels.",
+      "Real developers and designers review your app with structured ratings and honest feedback.",
   },
 ];
 
 export default function HowItWorks() {
   return (
-    <section className="bg-white py-24">
+    <section id="how-it-works" className="bg-white py-24">
       <div className="mx-auto max-w-7xl px-6">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -42,7 +42,7 @@ export default function HowItWorks() {
             How it works
           </h2>
           <p className="mt-4 text-lg text-gray-600">
-            Go from research question to actionable insights in three simple
+            Go from app submission to actionable feedback in three simple
             steps.
           </p>
         </motion.div>

@@ -1,12 +1,12 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight, Play } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const stats = [
-  { value: "10x", label: "Faster" },
-  { value: "90%", label: "Cost Savings" },
-  { value: "17+", label: "Languages" },
+  { value: "500+", label: "Apps Reviewed" },
+  { value: "4.8", label: "Avg Rating" },
+  { value: "2min", label: "AI Review Time" },
 ];
 
 export default function Hero() {
@@ -24,14 +24,14 @@ export default function Hero() {
           className="mx-auto max-w-3xl text-center"
         >
           <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl lg:text-6xl">
-            Customer Research in{" "}
+            Get Expert Feedback on Your App in{" "}
             <span className="bg-gradient-to-r from-lumora-600 to-lumora-400 bg-clip-text text-transparent">
-              Hours, Not Weeks
+              Minutes, Not Weeks
             </span>
           </h1>
           <p className="mx-auto mt-6 max-w-2xl text-lg leading-8 text-gray-600">
-            Run AI-moderated interviews at scale, synthesize insights instantly,
-            and make product decisions with confidence.
+            Submit your app and get instant AI-powered reviews plus detailed
+            community feedback with structured ratings across 6 key categories.
           </p>
 
           {/* CTAs */}
@@ -40,15 +40,14 @@ export default function Hero() {
               href="/signup"
               className="inline-flex items-center gap-2 rounded-lg bg-lumora-600 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-lumora-600/25 transition-all hover:bg-lumora-700 hover:shadow-xl hover:shadow-lumora-600/30"
             >
-              Start Free Trial
+              Submit Your App
               <ArrowRight className="h-4 w-4" />
             </a>
             <a
-              href="#demo"
+              href="#how-it-works"
               className="inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-6 py-3 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
             >
-              <Play className="h-4 w-4" />
-              Watch Demo
+              See How It Works
             </a>
           </div>
         </motion.div>

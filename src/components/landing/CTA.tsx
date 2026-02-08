@@ -17,16 +17,16 @@ export default function CTA() {
         className="relative mx-auto max-w-3xl px-6 text-center"
       >
         <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl">
-          Ready to transform your customer research?
+          Ready to get real feedback on your app?
         </h2>
         <p className="mx-auto mt-4 max-w-xl text-lg text-lumora-100">
-          Join thousands of teams running faster, smarter research with Lumora.
+          Join hundreds of developers getting better feedback and building better apps with Lumora.
         </p>
         <a
           href="/signup"
           className="mt-10 inline-flex items-center gap-2 rounded-lg bg-white px-8 py-3.5 text-sm font-semibold text-lumora-700 shadow-lg transition-all hover:bg-lumora-50 hover:shadow-xl"
         >
-          Start Free Trial
+          Submit Your App
           <ArrowRight className="h-4 w-4" />
         </a>
       </motion.div>

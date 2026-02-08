@@ -8,9 +8,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Lumora — AI-Powered Customer Research",
+  title: "Lumora — App Feedback & Reviews",
   description:
-    "Run AI-moderated interviews at scale, synthesize insights instantly, and make product decisions with confidence.",
+    "Get instant AI reviews and detailed community feedback on your app. Structured ratings across 6 categories with actionable suggestions.",
 };
 
 export default function RootLayout({

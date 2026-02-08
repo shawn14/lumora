@@ -2,50 +2,50 @@
 
 import { motion } from "framer-motion";
 import {
-  BotMessageSquare,
+  Bot,
+  Users,
+  BarChart3,
+  Lightbulb,
+  Image,
   FileText,
-  Sparkles,
-  Video,
-  Globe,
-  Settings2,
 } from "lucide-react";
 
 const features = [
   {
-    icon: BotMessageSquare,
-    title: "AI-Moderated Interviews",
+    icon: Bot,
+    title: "AI Reviews",
     description:
-      "Intelligent interviews that adapt in real-time, probing deeper based on participant responses.",
+      "Get instant, detailed AI analysis of your app across 6 key categories with actionable suggestions.",
+  },
+  {
+    icon: Users,
+    title: "Community Feedback",
+    description:
+      "Real developers and designers review your app and provide honest, constructive feedback.",
+  },
+  {
+    icon: BarChart3,
+    title: "Structured Ratings",
+    description:
+      "Every review rates your app on UI Design, UX Flow, Performance, Functionality, Innovation, and Overall Polish.",
+  },
+  {
+    icon: Lightbulb,
+    title: "Actionable Suggestions",
+    description:
+      "Receive specific, actionable suggestions to improve your app from both AI and human reviewers.",
+  },
+  {
+    icon: Image,
+    title: "Screenshot Analysis",
+    description:
+      "Share screenshots of your app for visual feedback on design and user experience.",
   },
   {
     icon: FileText,
-    title: "Smart Discussion Guides",
+    title: "Detailed Reports",
     description:
-      "AI generates unbiased, structured discussion guides from your research goals.",
-  },
-  {
-    icon: Sparkles,
-    title: "Instant Synthesis",
-    description:
-      "Real-time analysis across all interviews. Themes, sentiments, and key findings — automatically.",
-  },
-  {
-    icon: Video,
-    title: "Highlight Reels",
-    description:
-      "Auto-generated video highlight reels that bring customer stories to life for stakeholders.",
-  },
-  {
-    icon: Globe,
-    title: "Global Reach",
-    description:
-      "Access 8M+ participants across 17+ languages. B2B, B2C, anywhere in the world.",
-  },
-  {
-    icon: Settings2,
-    title: "Flexible Moderation",
-    description:
-      "Run interviews yourself or let AI handle it. Your research, your way.",
+      "Get comprehensive review summaries with aggregate scores across all categories.",
   },
 ];
 
@@ -61,11 +61,11 @@ export default function Features() {
           className="mx-auto max-w-2xl text-center"
         >
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Everything you need for world-class customer research
+            Everything you need to improve your app
           </h2>
           <p className="mt-4 text-lg text-gray-600">
-            From recruiting participants to synthesizing insights, Lumora
-            handles every step of the research process.
+            From instant AI analysis to detailed community reviews, Lumora gives
+            you the feedback you need to build better apps.
           </p>
         </motion.div>
 

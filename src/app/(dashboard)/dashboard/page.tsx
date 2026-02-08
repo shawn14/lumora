@@ -1,123 +1,190 @@
-import { auth } from "@/lib/auth";
-import { BookOpen, MessageSquare, Lightbulb, Users, Plus } from "lucide-react";
 import Link from "next/link";
-
-const stats = [
-  { label: "Active Studies", value: "3", icon: BookOpen, color: "text-lumora-600 bg-lumora-50" },
-  { label: "Total Interviews", value: "47", icon: MessageSquare, color: "text-blue-600 bg-blue-50" },
-  { label: "Insights Generated", value: "12", icon: Lightbulb, color: "text-amber-600 bg-amber-50" },
-  { label: "Participants Reached", value: "156", icon: Users, color: "text-emerald-600 bg-emerald-50" },
-];
-
-const recentStudies = [
-  { name: "E-commerce Checkout Flow", type: "Usability Test", status: "active", participants: 12, date: "Feb 5, 2026" },
-  { name: "New Feature Discovery", type: "Exploratory", status: "active", participants: 8, date: "Feb 3, 2026" },
-  { name: "Onboarding Experience", type: "Journey Map", status: "completed", participants: 15, date: "Jan 28, 2026" },
-  { name: "Pricing Page Feedback", type: "Concept Test", status: "active", participants: 12, date: "Jan 25, 2026" },
-];
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/db";
+import { redirect } from "next/navigation";
+import {
+  AppWindow,
+  MessageSquare,
+  Star,
+  PlusCircle,
+  Search,
+} from "lucide-react";
 
 export default async function DashboardPage() {
   const session = await auth();
-  const firstName = session?.user?.name?.split(" ")[0] || "there";
+  if (!session?.user?.id) redirect("/login");
+
+  const userId = session.user.id;
+  const firstName = session.user.name?.split(" ")[0] || "there";
+
+  const [appsCount, reviewsReceived, reviewsGiven, apps] = await Promise.all([
+    prisma.app.count({ where: { userId } }),
+    prisma.review.count({
+      where: { app: { userId } },
+    }),
+    prisma.review.count({ where: { reviewerId: userId } }),
+    prisma.app.findMany({
+      where: { userId },
+      include: {
+        reviews: { select: { overallScore: true } },
+      },
+    }),
+  ]);
+
+  // Compute average score across all user's apps
+  const allScores = apps.flatMap((app) =>
+    app.reviews.map((r) => r.overallScore)
+  );
+  const avgScore =
+    allScores.length > 0
+      ? Math.round(
+          (allScores.reduce((a, b) => a + b, 0) / allScores.length) * 10
+        ) / 10
+      : 0;
+
+  // Recent reviews on user's apps
+  const recentReviews = await prisma.review.findMany({
+    where: { app: { userId } },
+    include: {
+      reviewer: { select: { name: true, email: true } },
+      app: { select: { name: true, id: true } },
+    },
+    orderBy: { createdAt: "desc" },
+    take: 5,
+  });
+
+  const stats = [
+    {
+      label: "Apps Submitted",
+      value: appsCount,
+      icon: AppWindow,
+      color: "text-lumora-600",
+      bg: "bg-lumora-50",
+    },
+    {
+      label: "Reviews Received",
+      value: reviewsReceived,
+      icon: MessageSquare,
+      color: "text-blue-600",
+      bg: "bg-blue-50",
+    },
+    {
+      label: "Reviews Given",
+      value: reviewsGiven,
+      icon: MessageSquare,
+      color: "text-emerald-600",
+      bg: "bg-emerald-50",
+    },
+    {
+      label: "Avg Score",
+      value: avgScore > 0 ? avgScore.toFixed(1) : "--",
+      icon: Star,
+      color: "text-amber-600",
+      bg: "bg-amber-50",
+    },
+  ];
 
   return (
     <div className="space-y-8">
       {/* Welcome */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-2xl font-bold text-gray-900">
-            Welcome back, {firstName}
-          </h2>
-          <p className="mt-1 text-sm text-gray-500">
-            Here&apos;s an overview of your research activity.
-          </p>
-        </div>
-        <Link
-          href="/dashboard/studies/new"
-          className="inline-flex items-center gap-2 rounded-lg bg-lumora-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-lumora-700 transition"
-        >
-          <Plus className="h-4 w-4" />
-          Create New Study
-        </Link>
+      <div>
+        <h2 className="text-2xl font-bold text-gray-900">
+          Welcome back, {firstName}
+        </h2>
+        <p className="mt-1 text-sm text-gray-500">
+          Here&apos;s an overview of your app feedback activity.
+        </p>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      {/* Stat cards */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {stats.map((stat) => (
           <div
             key={stat.label}
-            className="rounded-xl border border-gray-200 bg-white p-5"
+            className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm"
           >
             <div className="flex items-center gap-3">
-              <div className={`rounded-lg p-2.5 ${stat.color}`}>
-                <stat.icon className="h-5 w-5" />
+              <div
+                className={`flex h-10 w-10 items-center justify-center rounded-lg ${stat.bg}`}
+              >
+                <stat.icon className={`h-5 w-5 ${stat.color}`} />
               </div>
               <div>
                 <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
-                <p className="text-sm text-gray-500">{stat.label}</p>
+                <p className="text-xs text-gray-500">{stat.label}</p>
               </div>
             </div>
           </div>
         ))}
       </div>
 
-      {/* Recent Studies */}
+      {/* Quick actions */}
+      <div className="flex flex-wrap gap-3">
+        <Link
+          href="/dashboard/submit"
+          className="inline-flex items-center gap-2 rounded-lg bg-lumora-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-lumora-700"
+        >
+          <PlusCircle className="h-4 w-4" />
+          Submit New App
+        </Link>
+        <Link
+          href="/dashboard/browse"
+          className="inline-flex items-center gap-2 rounded-lg border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
+        >
+          <Search className="h-4 w-4" />
+          Browse Apps
+        </Link>
+      </div>
+
+      {/* Recent activity */}
       <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4">
-          Recent Studies
+        <h3 className="text-sm font-semibold text-gray-900">
+          Recent Reviews on Your Apps
         </h3>
-        <div className="rounded-xl border border-gray-200 bg-white overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-gray-100 bg-gray-50/50">
-                <th className="px-5 py-3 text-left font-medium text-gray-500">
-                  Name
-                </th>
-                <th className="px-5 py-3 text-left font-medium text-gray-500 hidden sm:table-cell">
-                  Type
-                </th>
-                <th className="px-5 py-3 text-left font-medium text-gray-500">
-                  Status
-                </th>
-                <th className="px-5 py-3 text-left font-medium text-gray-500 hidden md:table-cell">
-                  Participants
-                </th>
-                <th className="px-5 py-3 text-left font-medium text-gray-500 hidden lg:table-cell">
-                  Created
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {recentStudies.map((study) => (
-                <tr key={study.name} className="hover:bg-gray-50/50 transition">
-                  <td className="px-5 py-3.5 font-medium text-gray-900">
-                    {study.name}
-                  </td>
-                  <td className="px-5 py-3.5 text-gray-500 hidden sm:table-cell">
-                    {study.type}
-                  </td>
-                  <td className="px-5 py-3.5">
-                    <span
-                      className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${
-                        study.status === "active"
-                          ? "bg-green-50 text-green-700"
-                          : "bg-gray-100 text-gray-600"
-                      }`}
-                    >
-                      {study.status.charAt(0).toUpperCase() + study.status.slice(1)}
+        {recentReviews.length === 0 ? (
+          <p className="mt-3 text-sm text-gray-500">
+            No reviews yet. Submit an app to get started!
+          </p>
+        ) : (
+          <div className="mt-3 space-y-3">
+            {recentReviews.map((review) => (
+              <Link
+                key={review.id}
+                href={`/dashboard/apps/${review.appId}`}
+                className="block rounded-xl border border-gray-100 bg-white p-4 shadow-sm transition hover:shadow-md"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {review.app?.name}
+                    </p>
+                    <p className="mt-0.5 text-xs text-gray-500">
+                      {review.isAI
+                        ? "AI Reviewer"
+                        : (review.reviewer?.name ?? "Anonymous")}{" "}
+                      &middot;{" "}
+                      {new Date(review.createdAt).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </p>
+                  </div>
+                  <div className="flex items-center gap-1 rounded-lg bg-lumora-50 px-2.5 py-1">
+                    <Star className="h-3.5 w-3.5 fill-lumora-500 text-lumora-500" />
+                    <span className="text-sm font-semibold text-lumora-700">
+                      {review.overallScore.toFixed(1)}
                     </span>
-                  </td>
-                  <td className="px-5 py-3.5 text-gray-500 hidden md:table-cell">
-                    {study.participants}
-                  </td>
-                  <td className="px-5 py-3.5 text-gray-500 hidden lg:table-cell">
-                    {study.date}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+                  </div>
+                </div>
+                {review.feedback && (
+                  <p className="mt-2 text-sm text-gray-600 line-clamp-2">
+                    {review.feedback}
+                  </p>
+                )}
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

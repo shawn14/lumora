@@ -3,65 +3,73 @@ export interface User {
   name: string;
   email: string;
   image?: string;
+  role: "user" | "admin";
 }
 
-export interface Study {
+export interface App {
   id: string;
-  name: string;
-  goal: string;
-  targetAudience: string;
-  type: StudyType;
-  status: StudyStatus;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: string;
-}
-
-export type StudyType = "exploratory" | "concept_test" | "usability_test" | "journey_map";
-export type StudyStatus = "draft" | "active" | "completed" | "archived";
-
-export interface DiscussionGuide {
-  id: string;
-  studyId: string;
-  sections: GuideSection[];
-}
-
-export interface GuideSection {
-  title: string;
-  objective: string;
-  questions: string[];
-}
-
-export interface Interview {
-  id: string;
-  studyId: string;
-  participantName: string;
-  status: "scheduled" | "in_progress" | "completed";
-  messages: Message[];
-  startedAt?: Date;
-  completedAt?: Date;
-}
-
-export interface Message {
-  id: string;
-  role: "ai" | "participant";
-  content: string;
-  timestamp: Date;
-}
-
-export interface Insight {
-  id: string;
-  studyId: string;
-  themes: Theme[];
-  summary: string;
-  recommendations: string[];
-  generatedAt: Date;
-}
-
-export interface Theme {
   name: string;
   description: string;
-  sentiment: "positive" | "negative" | "neutral" | "mixed";
-  quotes: string[];
-  frequency: number;
+  url?: string;
+  targetAudience?: string;
+  questions: string[];
+  screenshots: string[];
+  status: AppStatus;
+  userId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export type AppStatus = "draft" | "published" | "archived";
+
+export interface AppWithCounts extends App {
+  reviewCount: number;
+  averageScore: number;
+  user?: { name: string | null; email: string };
+}
+
+export const REVIEW_CATEGORIES = [
+  { key: "uiDesign", label: "UI Design" },
+  { key: "uxFlow", label: "UX Flow" },
+  { key: "performance", label: "Performance" },
+  { key: "functionality", label: "Functionality" },
+  { key: "innovation", label: "Innovation" },
+  { key: "overall", label: "Overall Polish" },
+] as const;
+
+export type RatingCategory = (typeof REVIEW_CATEGORIES)[number]["key"];
+
+export interface RatingMap {
+  uiDesign: number;
+  uxFlow: number;
+  performance: number;
+  functionality: number;
+  innovation: number;
+  overall: number;
+}
+
+export interface Review {
+  id: string;
+  isAI: boolean;
+  ratings: RatingMap;
+  overallScore: number;
+  feedback: string;
+  suggestions: string[];
+  appId: string;
+  reviewerId: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface ReviewWithDetails extends Review {
+  reviewer?: { name: string | null; email: string };
+  app?: { name: string; id: string };
+}
+
+export interface ReviewSummary {
+  totalReviews: number;
+  aiReviews: number;
+  humanReviews: number;
+  averageScores: RatingMap;
+  overallAverage: number;
 }

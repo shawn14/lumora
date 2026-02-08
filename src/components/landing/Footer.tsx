@@ -1,16 +1,16 @@
 const footerLinks = {
   Product: [
-    { label: "AI Interviews", href: "#" },
-    { label: "Discussion Guides", href: "#" },
-    { label: "Synthesis", href: "#" },
-    { label: "Highlight Reels", href: "#" },
-    { label: "Integrations", href: "#" },
+    { label: "AI Reviews", href: "#" },
+    { label: "Community Reviews", href: "#" },
+    { label: "Structured Ratings", href: "#" },
+    { label: "Reports", href: "#" },
+    { label: "Browse Apps", href: "/dashboard/browse" },
   ],
-  Solutions: [
-    { label: "Product Teams", href: "#" },
-    { label: "UX Research", href: "#" },
-    { label: "Marketing", href: "#" },
-    { label: "Enterprise", href: "#" },
+  "For Developers": [
+    { label: "Submit App", href: "/signup" },
+    { label: "Review Apps", href: "/dashboard/browse" },
+    { label: "Leaderboard", href: "#" },
+    { label: "API", href: "#" },
   ],
   Company: [
     { label: "About", href: "#" },
@@ -39,8 +39,7 @@ export default function Footer() {
               <span className="text-xl font-bold text-gray-900">Lumora</span>
             </a>
             <p className="mt-4 text-sm leading-6 text-gray-500">
-              AI-powered customer research that helps you build better products,
-              faster.
+              Get expert feedback on your apps from AI and the developer community.
             </p>
           </div>
 

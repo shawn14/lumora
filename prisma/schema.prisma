@@ -12,55 +12,40 @@ model User {
   email         String    @unique
   password      String?
   image         String?
-  studies       Study[]
+  role          String    @default("user")
+  apps          App[]
+  reviews       Review[]
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
 }
 
-model Study {
-  id              String          @id @default(cuid())
-  name            String
-  goal            String
-  targetAudience  String
-  type            String          @default("exploratory")
-  status          String          @default("draft")
-  user            User            @relation(fields: [userId], references: [id])
-  userId          String
-  guide           DiscussionGuide?
-  interviews      Interview[]
-  insights        Insight[]
-  createdAt       DateTime        @default(now())
-  updatedAt       DateTime        @updatedAt
-}
-
-model DiscussionGuide {
-  id        String   @id @default(cuid())
-  sections  String   // JSON string of GuideSection[]
-  study     Study    @relation(fields: [studyId], references: [id])
-  studyId   String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-
-model Interview {
+model App {
   id              String    @id @default(cuid())
-  participantName String
-  status          String    @default("scheduled")
-  messages        String    @default("[]") // JSON string of Message[]
-  study           Study     @relation(fields: [studyId], references: [id])
-  studyId         String
-  startedAt       DateTime?
-  completedAt     DateTime?
+  name            String
+  description     String
+  url             String?
+  targetAudience  String?
+  questions       String    @default("[]")
+  screenshots     String    @default("[]")
+  status          String    @default("published")
+  user            User      @relation(fields: [userId], references: [id])
+  userId          String
+  reviews         Review[]
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
 }
 
-model Insight {
-  id              String   @id @default(cuid())
-  themes          String   @default("[]") // JSON string of Theme[]
-  summary         String
-  recommendations String   @default("[]") // JSON string
-  study           Study    @relation(fields: [studyId], references: [id])
-  studyId         String
-  generatedAt     DateTime @default(now())
+model Review {
+  id              String    @id @default(cuid())
+  isAI            Boolean   @default(false)
+  ratings         String    @default("{}")
+  overallScore    Float     @default(0)
+  feedback        String
+  suggestions     String    @default("[]")
+  app             App       @relation(fields: [appId], references: [id])
+  appId           String
+  reviewer        User      @relation(fields: [reviewerId], references: [id])
+  reviewerId      String
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
 }

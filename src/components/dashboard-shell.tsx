@@ -6,9 +6,9 @@ import { signOut } from "next-auth/react";
 import { useState } from "react";
 import {
   LayoutDashboard,
-  BookOpen,
-  Lightbulb,
-  Users,
+  AppWindow,
+  Search,
+  MessageSquare,
   Settings,
   LogOut,
   Menu,
@@ -18,9 +18,9 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/dashboard/studies", label: "Studies", icon: BookOpen },
-  { href: "/dashboard/insights", label: "Insights", icon: Lightbulb },
-  { href: "/dashboard/participants", label: "Participants", icon: Users },
+  { href: "/dashboard/apps", label: "My Apps", icon: AppWindow },
+  { href: "/dashboard/browse", label: "Browse Apps", icon: Search },
+  { href: "/dashboard/reviews", label: "My Reviews", icon: MessageSquare },
   { href: "/dashboard/settings", label: "Settings", icon: Settings },
 ];
 

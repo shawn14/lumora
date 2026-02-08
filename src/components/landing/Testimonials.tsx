@@ -6,24 +6,24 @@ import { Quote } from "lucide-react";
 const testimonials = [
   {
     quote:
-      "Lumora cut our research timeline from six weeks to three days. The AI-moderated interviews uncovered insights our team never would have found on our own.",
-    name: "Sarah Chen",
-    title: "VP of Product",
-    company: "Rivian Labs",
+      "The AI review caught UX issues we'd been blind to for months. Within a week of fixing them, our retention improved by 23%.",
+    name: "Alex Rivera",
+    title: "Founder",
+    company: "TaskFlow",
   },
   {
     quote:
-      "We used to spend $50K per research study. With Lumora, we run continuous research for a fraction of the cost and get richer, more nuanced data.",
-    name: "Marcus Johnson",
-    title: "Head of UX Research",
-    company: "Canopy Health",
+      "Getting structured feedback across 6 categories made it so clear where to focus. Way better than vague App Store reviews.",
+    name: "Priya Sharma",
+    title: "Product Lead",
+    company: "HealthKit Pro",
   },
   {
     quote:
-      "The highlight reels are a game-changer. Stakeholders actually watch them, and it's transformed how our leadership team makes product decisions.",
-    name: "Emily Nakamura",
-    title: "Director of Insights",
-    company: "Beacon Commerce",
+      "We used to spend weeks hunting for beta testers. Now we get detailed, actionable feedback from the Lumora community in hours.",
+    name: "James Park",
+    title: "CTO",
+    company: "DevSync",
   },
 ];
 
@@ -39,7 +39,7 @@ export default function Testimonials() {
           className="mx-auto max-w-2xl text-center"
         >
           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
-            Trusted by research teams everywhere
+            Trusted by developers everywhere
           </h2>
         </motion.div>
 
