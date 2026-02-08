@@ -10,27 +10,25 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-inter);
   --font-mono: var(--font-geist-mono);
-  --color-lumora-50: #f5f3ff;
-  --color-lumora-100: #ede9fe;
-  --color-lumora-200: #ddd6fe;
-  --color-lumora-300: #c4b5fd;
-  --color-lumora-400: #a78bfa;
-  --color-lumora-500: #8b5cf6;
-  --color-lumora-600: #7c3aed;
-  --color-lumora-700: #6d28d9;
-  --color-lumora-800: #5b21b6;
-  --color-lumora-900: #4c1d95;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-lumora-50: #f0f7ff;
+  --color-lumora-100: #e0effe;
+  --color-lumora-200: #bae0fd;
+  --color-lumora-300: #7cc8fb;
+  --color-lumora-400: #36aaf5;
+  --color-lumora-500: #0c8ee6;
+  --color-lumora-600: #0070c4;
+  --color-lumora-700: #015a9f;
+  --color-lumora-800: #064c83;
+  --color-lumora-900: #0b406d;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+input, textarea, select {
+  color: #171717;
+  background-color: #ffffff;
 }
