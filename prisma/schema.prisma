@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  password      String?
+  image         String?
+  studies       Study[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Study {
+  id              String          @id @default(cuid())
+  name            String
+  goal            String
+  targetAudience  String
+  type            String          @default("exploratory")
+  status          String          @default("draft")
+  user            User            @relation(fields: [userId], references: [id])
+  userId          String
+  guide           DiscussionGuide?
+  interviews      Interview[]
+  insights        Insight[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+}
+
+model DiscussionGuide {
+  id        String   @id @default(cuid())
+  sections  String   // JSON string of GuideSection[]
+  study     Study    @relation(fields: [studyId], references: [id])
+  studyId   String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Interview {
+  id              String    @id @default(cuid())
+  participantName String
+  status          String    @default("scheduled")
+  messages        String    @default("[]") // JSON string of Message[]
+  study           Study     @relation(fields: [studyId], references: [id])
+  studyId         String
+  startedAt       DateTime?
+  completedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Insight {
+  id              String   @id @default(cuid())
+  themes          String   @default("[]") // JSON string of Theme[]
+  summary         String
+  recommendations String   @default("[]") // JSON string
+  study           Study    @relation(fields: [studyId], references: [id])
+  studyId         String
+  generatedAt     DateTime @default(now())
+}

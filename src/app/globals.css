@@ -10,6 +10,16 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-lumora-50: #f5f3ff;
+  --color-lumora-100: #ede9fe;
+  --color-lumora-200: #ddd6fe;
+  --color-lumora-300: #c4b5fd;
+  --color-lumora-400: #a78bfa;
+  --color-lumora-500: #8b5cf6;
+  --color-lumora-600: #7c3aed;
+  --color-lumora-700: #6d28d9;
+  --color-lumora-800: #5b21b6;
+  --color-lumora-900: #4c1d95;
 }
 
 @media (prefers-color-scheme: dark) {
