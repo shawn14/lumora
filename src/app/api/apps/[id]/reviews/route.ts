@@ -39,17 +39,30 @@ export async function POST(
     ? Math.round((values.reduce((a, b) => a + b, 0) / values.length) * 10) / 10
     : 0;
 
-  const review = await prisma.review.create({
-    data: {
-      isAI: false,
-      ratings: JSON.stringify(ratings),
-      overallScore,
-      feedback,
-      suggestions: JSON.stringify(suggestions || []),
-      appId: id,
-      reviewerId: session.user.id,
-    },
-  });
+  let review;
+  try {
+    review = await prisma.review.create({
+      data: {
+        isAI: false,
+        ratings: JSON.stringify(ratings),
+        overallScore,
+        feedback,
+        suggestions: JSON.stringify(suggestions || []),
+        appId: id,
+        reviewerId: session.user.id,
+      },
+    });
+  } catch (error: unknown) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (error as { code: string }).code === "P2002"
+    ) {
+      return NextResponse.json({ error: "You have already reviewed this app" }, { status: 409 });
+    }
+    throw error;
+  }
 
   return NextResponse.json({
     ...review,

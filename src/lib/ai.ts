@@ -88,15 +88,30 @@ export async function createAIReviewRecord(appId: string, parsed: AIReviewParsed
       ? Math.round((values.reduce((a, b) => a + b, 0) / values.length) * 10) / 10
       : 0;
 
-  return prisma.review.create({
-    data: {
-      isAI: true,
-      ratings: JSON.stringify(ratings),
-      overallScore,
-      feedback: parsed.feedback || "AI review generated.",
-      suggestions: JSON.stringify(parsed.suggestions || []),
-      appId,
-      reviewerId: AI_REVIEWER_ID,
-    },
-  });
+  try {
+    return await prisma.review.create({
+      data: {
+        isAI: true,
+        ratings: JSON.stringify(ratings),
+        overallScore,
+        feedback: parsed.feedback || "AI review generated.",
+        suggestions: JSON.stringify(parsed.suggestions || []),
+        appId,
+        reviewerId: AI_REVIEWER_ID,
+      },
+    });
+  } catch (error: unknown) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (error as { code: string }).code === "P2002"
+    ) {
+      const existing = await prisma.review.findFirst({
+        where: { appId, reviewerId: AI_REVIEWER_ID },
+      });
+      if (existing) return existing;
+    }
+    throw error;
+  }
 }

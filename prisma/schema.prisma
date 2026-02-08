@@ -42,10 +42,12 @@ model Review {
   overallScore    Float     @default(0)
   feedback        String
   suggestions     String    @default("[]")
-  app             App       @relation(fields: [appId], references: [id])
+  app             App       @relation(fields: [appId], references: [id], onDelete: Cascade)
   appId           String
   reviewer        User      @relation(fields: [reviewerId], references: [id])
   reviewerId      String
   createdAt       DateTime  @default(now())
   updatedAt       DateTime  @updatedAt
+
+  @@unique([appId, reviewerId])
 }

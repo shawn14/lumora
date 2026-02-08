@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import bcrypt from "bcryptjs";
 import { prisma } from "./db";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -23,9 +24,20 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           return null;
         }
 
-        // Simple password comparison for demo purposes
-        if (user.password !== credentials.password) {
-          return null;
+        const passwordStr = credentials.password as string;
+        const isValidBcrypt = await bcrypt.compare(passwordStr, user.password);
+
+        if (!isValidBcrypt) {
+          // Lazy migration: check if stored password is plaintext (pre-hashing)
+          if (user.password === passwordStr) {
+            const hashed = await bcrypt.hash(passwordStr, 12);
+            await prisma.user.update({
+              where: { id: user.id },
+              data: { password: hashed },
+            });
+          } else {
+            return null;
+          }
         }
 
         return {

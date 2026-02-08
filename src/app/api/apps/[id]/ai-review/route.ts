@@ -19,6 +19,16 @@ export async function POST(
     return NextResponse.json({ error: "App not found" }, { status: 404 });
   }
 
+  const existingAIReview = await prisma.review.findFirst({
+    where: { appId: id, reviewerId: "ai-reviewer" },
+  });
+  if (existingAIReview) {
+    return NextResponse.json(
+      { error: "AI review already exists for this app" },
+      { status: 409 }
+    );
+  }
+
   let parsed;
   try {
     parsed = await generateAIReview(app);
